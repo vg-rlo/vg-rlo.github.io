@@ -1,16 +1,17 @@
 # Setup
 title:               vg-rlo's blog
-tagline:             'Keep going to full stack data analyst'
-description:         'A reserved <a href="https://jekyllrb.com" target="_blank">Jekyll</a> theme that places the utmost gravity on content with a hidden drawer. Made by <a href="https://twitter.com/mdo" target="_blank">@mdo</a>.'
+tagline:             'Keep Going!'
+description:         'Full stack data analyst가 되고 싶다..!'
+# description:         'A reserved <a href="https://jekyllrb.com" target="_blank">Jekyll</a> theme that places the utmost gravity on content with a hidden drawer. Made by <a href="https://twitter.com/mdo" target="_blank">@mdo</a>.'
 url:                 https://vg-rlo.github.io
 baseurl:             ''
-paginate:            5
+paginate:            1
 permalink:           pretty
 
 # About/contact
 author:
-  name:              Mark Otto
-  url:               https://twitter.com/mdo
+  name:              SeongEun, Mun
+  url:               https://github.com/vg-rlo
   email:             munorean@gmail.com
 
 # Gems
