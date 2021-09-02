@@ -126,7 +126,7 @@ Why we need Clustres of machines required?
 
 - Reliability!
     - Problem: self-host data-center
-        - 천지재변
+        - 천재지변
         - Need different geographical locations
 
 ### Cloud service providers: AWS, Azure and Google
