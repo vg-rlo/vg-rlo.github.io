@@ -80,7 +80,7 @@ tax_data.head(4) # check the first few rows in tax data
 ### Assigning Column Names
 
 ```python
-col_names = list(tax_data_first1000) # 어디서 나온 아이지..? tax_data_first1000
+col_names = list(tax_data_first1000) # 동일하게 사용할 col_names 가져오기
 tax_data = pd.read_csv('us_tax_data_2016.csv', nrows=500, skiprows=1000, header=None, names=col_names)
 
 ```
