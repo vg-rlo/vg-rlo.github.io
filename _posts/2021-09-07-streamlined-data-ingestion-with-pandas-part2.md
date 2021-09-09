@@ -50,7 +50,7 @@ title: Streamlined Data Ingestion with pandas (2)
 - **Create way to connect to database**
     - `create_engine(string URL)` in `sqlalchemy`
 
-        e.g. "sqlite:///filename.db
+        e.g. "sqlite:///filename.db"
 
 - **Query database with SQL and pandas**
     - `pd.read_sql(query, engine)`
@@ -81,7 +81,12 @@ weather = pd.read_sql("SELECT * FROM weather", engine)
 - WHERE
     - `SELECT [column_name] FROM [table_name] WHERE [condition];`
     - Filtering
-        - `=, >, ≥. <. ≤, <>`
+        - `=`
+        - `>`
+        - `≥`
+        - `<`
+        - `≤`
+        - `<>`
     - `AND, OR`
 
 ```python
@@ -97,14 +102,14 @@ weather = pd.read_sql(query, engine)
 
 ### More complex **SQL queries**
 
-- Get unique value - `DISTINCT`
+- Get **unique** value - `DISTINCT`
     - `SELECT DISTINCT [column names] FROM [table];`
     - `SELECT DISTINCT * FROM [table];`
-- Aggregate functions - `SUM`, `AVG`, `MAX`, `MIN`, `COUNT`
+- **Aggregate** functions - `SUM`, `AVG`, `MAX`, `MIN`, `COUNT`
     - `SELECT AVG([column name]) FROM [table];`
     - `SELECT COUNT(*) FROM [table_name];`
     - `SELECT COUNT(DISTINCT [column_names]) FROM [table_name];`
-- Summarize by categories - `GROUP BY`
+- **Summarize** by categories - `GROUP BY`
 
     ```python
     # GROUP BY & COUNT 예제
@@ -146,7 +151,7 @@ GROUP BY hqd311calls.created_date;
 
 ### JSON
 
-- Javascrip Object Notation
+- Javascript Object Notation
 - Common web data format
 - tabular X
     - 데이터 저장에 효과적
@@ -166,17 +171,17 @@ GROUP BY hqd311calls.created_date;
 - Record Orientation
     - 가장 자주 사용되는 JSON arrangement
 
-        ![image](https://user-images.githubusercontent.com/69677950/132643164-5ff106d6-b87f-452d-b2a3-a2364107c055.png)
+        ![https://user-images.githubusercontent.com/69677950/132643164-5ff106d6-b87f-452d-b2a3-a2364107c055.png](https://user-images.githubusercontent.com/69677950/132643164-5ff106d6-b87f-452d-b2a3-a2364107c055.png)
 
 - Column Orientation
     - 속성(attribute)을 반복하지 않음으로써 파일 크기 최소화(space-efficient)
 
-        ![image](https://user-images.githubusercontent.com/69677950/132643234-cdc7197b-2a8f-434c-8e61-f8d4e1eccffd.png)
+        ![https://user-images.githubusercontent.com/69677950/132643234-cdc7197b-2a8f-434c-8e61-f8d4e1eccffd.png](https://user-images.githubusercontent.com/69677950/132643234-cdc7197b-2a8f-434c-8e61-f8d4e1eccffd.png)
 
 - Specifying Orientation
     - 분할 지향적(split oriented) e.g. 열 이름, 색인, 값에 대해 다른 목록을 사용함
 
-        ![image](https://user-images.githubusercontent.com/69677950/132643266-41753c47-9fe4-4813-8595-138089c05bfe.png)
+        ![https://user-images.githubusercontent.com/69677950/132643266-41753c47-9fe4-4813-8595-138089c05bfe.png](https://user-images.githubusercontent.com/69677950/132643266-41753c47-9fe4-4813-8595-138089c05bfe.png)
 
 ```python
 import pandas as pd
@@ -197,6 +202,7 @@ death_cases = pd.read_json("nyc_death_causes.json", orient="split")
 ### API(Application Programming Interfaces)
 
 - 정의 및 프로토콜 세트로서 애플리케이션 소프트웨어를 구축하고 통합하기 위해 쓰입니다.
+- 요청을 보낼 endpoint 제공
 
 ### Requests(Python library)
 
@@ -230,9 +236,9 @@ bookstores = pd.DataFrame(data["businesses"])
 
 - value 자체가 객체(object)인 경우
 - 평탄화 방법
-    - pandas.io.json
+    - `pandas.io.json`
         - 주의사항: own import statement
-        - json_normalize()
+        - `json_normalize()`
             - ditionary/list of dictionary ~= `pd.DataFrame()`
             - return: flattened data frame
             - column name: `attribute.nestedattribute`
@@ -270,7 +276,7 @@ bookstores = json_normalize(data["businesses"], sep="_")
 ```python
 df = json_normalize(data["businesses"], sep="_", record_path="categories", 
 										meta=["name", "alias", "rating", ["coordinates", "latitude"], ["coordinates", "longitude"]],
-										meta_prefix="biz_"
+										meta_prefix="biz_")
 ```
 
 ### Combining multiple datasets

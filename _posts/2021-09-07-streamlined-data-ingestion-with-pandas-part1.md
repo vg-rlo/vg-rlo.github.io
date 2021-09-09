@@ -80,7 +80,7 @@ tax_data.head(4) # check the first few rows in tax data
 ### Assigning Column Names
 
 ```python
-col_names = list(tax_data_first1000) # 동일하게 사용할 col_names 가져오기
+col_names = list(tax_data_first1000) # 어디서 나온 아이지..? tax_data_first1000
 tax_data = pd.read_csv('us_tax_data_2016.csv', nrows=500, skiprows=1000, header=None, names=col_names)
 
 ```
@@ -193,7 +193,7 @@ tax_data = pd.read_csv('us_tax_data_2016.csv', nrows=500, skiprows=1000, header=
         bool_data = pd.read_excel("sample.xlsx", dtype={"AttendBootcamp":bool}, true_values=['Yes'], false_values=['No'])
         ```
 
-주의할 점은 boolean으로 취급하게 되면, 결측치를 True로 변환하기 때문에 분석할 때 등 이러한 데이터 처리가 영향을 미치는지 확인할 필요가 있습니다.
+주의할 점은 boolean으로 취급하게 되면, 값이 있는 경우까지 결측치를 True로 변환하기 때문에 분석할 때 등 이러한 데이터 처리가 영향을 미치는지 확인할 필요가 있습니다.
 
 ### Modifying imports: parsing dates
 
@@ -214,12 +214,12 @@ tax_data = pd.read_csv('us_tax_data_2016.csv', nrows=500, skiprows=1000, header=
     - non-standard datetime format에는 적용X
 - `pd.to_datetime()`
     - format
-        - %Y
-        - %m
-        - %d
-        - %H
-        - %M
-        - %S
+        - `%Y`
+        - `%m`
+        - `%d`
+        - `%H`
+        - `%M`
+        - `%S`
 
         ```python
         format_string = "%m%d%Y %H:%M:%S"
