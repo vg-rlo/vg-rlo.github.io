@@ -14,16 +14,17 @@ title: Streamlined Data Ingestion with pandas (2)
 
 ### Pandas
 
-> Pandas vs SQL
-Pandas vs Spreadsheets
+> **Pandas vs SQL**
 - 공식문서: [https://pandas.pydata.org/docs/getting_started/comparison/comparison_with_sql.html](https://pandas.pydata.org/docs/getting_started/comparison/comparison_with_sql.html)
+
+> **Pandas vs Spreadsheets**
 - 공식문서: [https://pandas.pydata.org/docs/getting_started/comparison/comparison_with_spreadsheets.html](https://pandas.pydata.org/docs/getting_started/comparison/comparison_with_spreadsheets.html)
 
 ### Relational Database
 
 - Entity는 Table로 만들어짐
 
-    > Entity?
+    > **Entity?**
     실체, 객체란 의미로 저장되기 위한 타겟, 업무상 관리가 필요한 대상 등을 명사로 표현한 것을 의미합니다.
     - 출처: [https://brunch.co.kr/@ambler/55](https://brunch.co.kr/@ambler/55)
 
@@ -142,3 +143,144 @@ GROUP BY hqd311calls.created_date;
 ```
 
 ## Importing JSON Data and Working with APIs
+
+### JSON
+
+- Javascrip Object Notation
+- Common web data format
+- tabular X
+    - 데이터 저장에 효과적
+    - 속성(atrribute) 생략 가능 = record가 모두 동일한 속성(attribute) 집합을 가질 필요 없음
+- 데이터가 객체 모음(collection of objects)으로 구성됨
+- 객체는 속성-값(attribute-vale) 쌍을 포함함 ~= Python dictionary {}
+- 중첩 가능(nested JSON), 값 자체는 객체 또는 객체 목록일 수 있음
+
+### Reading JSON Data
+
+- `read_json()`
+    - `dtype`
+    - `orient` : 배열 또는 방향
+
+### Orientation
+
+- Record Orientation
+    - 가장 자주 사용되는 JSON arrangement
+
+        ![image](https://user-images.githubusercontent.com/69677950/132643164-5ff106d6-b87f-452d-b2a3-a2364107c055.png)
+
+- Column Orientation
+    - 속성(attribute)을 반복하지 않음으로써 파일 크기 최소화(space-efficient)
+
+        ![image](https://user-images.githubusercontent.com/69677950/132643234-cdc7197b-2a8f-434c-8e61-f8d4e1eccffd.png)
+
+- Specifying Orientation
+    - 분할 지향적(split oriented) e.g. 열 이름, 색인, 값에 대해 다른 목록을 사용함
+
+        ![image](https://user-images.githubusercontent.com/69677950/132643266-41753c47-9fe4-4813-8595-138089c05bfe.png)
+
+```python
+import pandas as pd
+
+death_cases = pd.read_json("nyc_death_causes.json", orient="split")
+```
+
+> **JSON orientation in Pandas**
+
+- `'split'` : dict like `{index -> [index], columns -> [columns], data -> [values]}`
+- `'records'` : list like `[{column -> value}, ... , {column -> value}]`
+- `'index'` : dict like `{index -> {column -> value}}`
+- `'columns'` : dict like `{column -> {index -> value}}`
+- `'values'` : just the values array
+
+- 공식문서: [https://pandas.pydata.org/pandas-docs/version/1.1.3/reference/api/pandas.read_json.html](https://pandas.pydata.org/pandas-docs/version/1.1.3/reference/api/pandas.read_json.html)
+
+### API(Application Programming Interfaces)
+
+- 정의 및 프로토콜 세트로서 애플리케이션 소프트웨어를 구축하고 통합하기 위해 쓰입니다.
+
+### Requests(Python library)
+
+- 웹사이트로부터 데이터를 주고 받을 수 있음
+- URL 기반으로 접근하기 때문에 특정 API에만 묶여있지 않음
+- `requests.get([urel_string])`
+    - `params`: dictionary, parameters and values to cutomize API request
+    - `headers`: dictionary, user authentication to API
+    - return: `response object` (data & metadata)
+        - `response.json()`: 데이터만 가져오기
+            - return: dictionary
+            - `pd.DataFrame()`을 사용해서 JSON to data frame (not `read_json()`)
+
+```python
+import request
+import pandas as pd
+
+api_url = "https://api.yelp.com/v3/businesses/search"
+params = {"term": "bookstore", "location": "San Francisco"}
+headers = {"Authorization": "Bearer {}".format(api_key)}
+
+# Query Yelp API w/ headers and params set
+response = requests.get(api_url, params=params, headers=headers)
+
+# Isolate JSON data from response object
+date = response.json() # dictionary
+bookstores = pd.DataFrame(data["businesses"])
+```
+
+### nested JSON
+
+- value 자체가 객체(object)인 경우
+- 평탄화 방법
+    - pandas.io.json
+        - 주의사항: own import statement
+        - json_normalize()
+            - ditionary/list of dictionary ~= `pd.DataFrame()`
+            - return: flattened data frame
+            - column name: `attribute.nestedattribute`
+            - sep: 점이나 콤마와 다른 구분 기호를 지정 e.g. "_"
+
+```python
+import pandas as pd
+import requests
+from pandas.io.json import json_normalize
+
+api_url = "https://api.yelp.com/v3/businesses/search"
+params = {"term": "bookstore", "location": "San Francisco"}
+headers = {"Authorization": "Bearer {}".format(api_key)}
+
+# Query Yelp API w/ headers and params set
+response = requests.get(api_url, params=params, headers=headers)
+
+# Isolate JSON data from response object
+date = response.json() # dictionary
+# bookstores = pd.DataFrame(data["businesses"])
+
+# Flatten nested JSON
+bookstores = json_normalize(data["businesses"], sep="_")
+```
+
+### Issue - Deeply Nested Data
+
+- 사용자 지정 Flatten 함수 사용
+- 분석과 관계 없을 때에는, 그대로 유지
+- `json_normalize()`
+    - `record_path`: 중첩된 데이터(nested data)에 대한 문자열 속성의 string/list
+    - `meta`: higher level attribute
+    - `meta_prefix`
+
+```python
+df = json_normalize(data["businesses"], sep="_", record_path="categories", 
+										meta=["name", "alias", "rating", ["coordinates", "latitude"], ["coordinates", "longitude"]],
+										meta_prefix="biz_"
+```
+
+### Combining multiple datasets
+
+- Appending
+    - `DataFrame.append(DataFrame)`
+    - `ignore_index=True/False`
+- Merging
+    - `DataFrame.merge()`
+        - key columns(전제 - same data type)
+            - `on`: name 동일할 때
+            - `left_on`
+            - `right_on`
